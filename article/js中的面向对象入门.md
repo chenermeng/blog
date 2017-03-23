@@ -325,6 +325,6 @@ console.dir(son)
 
 最后来一张思维导图
 
-![面向对象入门](http://upload-images.jianshu.io/upload_images/2791152-ca92acdd3e0aed12.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![面向对象入门](https://github.com/chenermeng/blog/blob/master/img/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1.png?raw=true)
 
 如有错误，欢迎指正！
