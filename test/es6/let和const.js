@@ -17,9 +17,6 @@ var foo = 2;
 console.log(bar); // 报错ReferenceError
 let bar = 2;
 
-
-
-
 for (let i = 0; i < 10; i++) {
     console.log(i)
 }
@@ -31,3 +28,13 @@ for (let i = 0; i < 10; i++) {
     };
 }
 a[6](); //6
+
+/*
+ const 声明一个只读的常量,一旦声明，常量的值就不能改变
+
+ const PI = 3.1415;
+ PI // 3.1415
+
+ PI = 3;
+ // TypeError: Assignment to constant variable.
+ */
