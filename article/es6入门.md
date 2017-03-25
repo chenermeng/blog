@@ -1,8 +1,6 @@
 ### 前言
 > javascript是世界上最好的语言
 
-相信很多学js的小伙伴都有过这样的苦恼,我es3,es5的语法都没记全呢，es6就已经出了,
-
 ##### ES6在目前的很多环境中都不支持，我们需要使用Babel(JS编译器)将ES6编译为ES5  [Babel 入门教程](http://www.ruanyifeng.com/blog/2016/01/babel.html)
 
 #### let和const命令
