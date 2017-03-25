@@ -136,18 +136,26 @@ bar; // "bbb"
 ```
 var { foo: baz } = { foo: 'aaa', bar: 'bbb' };
 baz // "aaa"
-
-//转码后
-var _foo$bar2 = { foo: 'aaa', bar: 'bbb' },
-    baz = _foo$bar2.foo;
-baz; // "aaa"
 ```
 对象的解构赋值是下面形式的简写
-对象的解构赋值的内部机制，是先找到同名属性，然后再赋给对应的变量。真正被赋值的是后者，而不是前者。
+
 
 ```
 let { foo: foo, bar: bar } = { foo: "aaa", bar: "bbb" };
 ```
+对象的解构赋值的内部机制，是先找到同名属性，然后再赋给对应的变量。真正被赋值的是后者，而不是前者。
+
+```
+//上边那个例子
+var { foo: baz } = { foo: 'aaa', bar: 'bbb' };
+baz // "aaa"
+//babel转码后
+var _foo$bar2 = { foo: 'aaa', bar: 'bbb' },
+    baz = _foo$bar2.foo;
+baz; // "aaa"
+
+```
+
 对象的解构也可以指定默认值,默认值生效的条件是，对象的属性值严格等于undefined
 
 ```
@@ -215,3 +223,14 @@ add([1, 2]); // 3
 ```
 详细的教程请看[变量的解构赋值](http://es6.ruanyifeng.com/#docs/destructuring)
 #### 字符串的扩展
+- 确定一个字符串是否包含在另一个字符串的方法
+includes()：返回布尔值，表示是否找到了参数字符串。
+startsWith()：返回布尔值，表示参数字符串是否在源字符串的头部。
+endsWith()：返回布尔值，表示参数字符串是否在源字符串的尾部。
+
+```
+var s = 'Hello world!';
+s.startsWith('Hello') // true
+s.endsWith('!') // true
+s.includes('o') // true
+```
