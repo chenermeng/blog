@@ -711,8 +711,7 @@ let ab = { ...a, ...b };
 // 等同于
 let ab = Object.assign({}, a, b);
 ```
-
-
-
-
 详细的教程请看[对象的扩展](http://es6.ruanyifeng.com/#docs/object)
+#### Class
+
+详细的教程请看[Class](http://es6.ruanyifeng.com/#docs/class)
