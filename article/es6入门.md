@@ -531,7 +531,186 @@ var sum = function(num1, num2) {
 
 详细的教程请看[函数的扩展](http://es6.ruanyifeng.com/#docs/function)
 #### 对象的扩展
+- 属性的简洁表示法
+ES6允许直接写入变量和函数，作为对象的属性和方法。这样的书写更加简洁。
 
+```
+var foo = 'bar';
+var baz = {foo};
+baz // {foo: "bar"}
+
+// 等同于
+var baz = {foo: foo};
+
+//方法也可以简写
+var o = {
+  method() {
+    return "Hello!";
+  }
+};
+
+// 等同于
+var o = {
+  method: function() {
+    return "Hello!";
+  }
+};
+```
+- 属性名表达式
+ES6 允许字面量定义对象时把表达式放在方括号内。
+
+```
+let propKey = 'foo';
+
+let obj = {
+  [propKey]: true,
+  ['a' + 'bc']: 123
+};
+
+
+var lastWord = 'last word';
+var a = {
+  'first word': 'hello',
+  [lastWord]: 'world'
+};
+
+a['first word'] // "hello"
+a[lastWord] // "world"
+a['last word'] // "world"
+```
+注意，属性名表达式与简洁表示法，不能同时使用，会报错。
+
+```
+// 报错
+var foo = 'bar';
+var bar = 'abc';
+var baz = { [foo] };
+
+// 正确
+var foo = 'bar';
+var baz = { [foo]: 'abc'};
+```
+注意，属性名表达式如果是一个对象，默认情况下会自动将对象转为字符串[object Object]，这一点要特别小心。
+
+```
+const keyA = {a: 1};
+const keyB = {b: 2};
+
+const myObject = {
+  [keyA]: 'valueA',
+  [keyB]: 'valueB'
+};
+
+myObject // Object {[object Object]: "valueB"}
+```
+上面代码中，[keyA]和[keyB]得到的都是[object Object]，所以[keyB]会把[keyA]覆盖掉，而myObject最后只有一个[object Object]属性
+- Object.is()
+用来比较两个值是否严格相等，与严格比较运算符（===）的行为基本一致。
+
+```
+Object.is('foo', 'foo')
+// true
+Object.is({}, {})
+// false
+
+//不同之处
++0 === -0 //true
+NaN === NaN // false
+
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+```
+- Object.assign()
+Object.assign方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象（target）。
+
+```
+var target = { a: 1 };
+
+var source1 = { b: 2 };
+var source2 = { c: 3 };
+
+Object.assign(target, source1, source2);
+target // {a:1, b:2, c:3}
+```
+Object.assign方法的第一个参数是目标对象，后面的参数都是源对象。
+注意，如果目标对象与源对象有同名属性，或多个源对象有同名属性，则后面的属性会覆盖前面的属性
+
+```
+var target = { a: 1, b: 1 };
+
+var source1 = { b: 2, c: 2 };
+var source2 = { c: 3 };
+
+Object.assign(target, source1, source2);
+target // {a:1, b:2, c:3}
+```
+如果只有一个参数，Object.assign会直接返回该参数。
+如果该参数不是对象，则会先转成对象，然后返回。
+Object.assign可以用来处理数组，但是会把数组视为对象。
+
+```
+var obj = {a: 1};
+Object.assign(obj) === obj // true
+
+typeof Object.assign(2) // "object"
+
+Object.assign([1, 2, 3], [4, 5])
+// [4, 5, 3]
+```
+- 属性的遍历
+    1. for...in
+        for...in循环遍历对象自身的和继承的可枚举属性（不含Symbol属性）。
+    2. Object.keys(obj)
+        Object.keys返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含Symbol属性）。
+    3. Object.getOwnPropertyNames(obj)
+        Object.getOwnPropertyNames返回一个数组，包含对象自身的所有属性（不含Symbol属性，但是包括不可枚举属性）
+    4. Object.getOwnPropertySymbols(obj)
+        Object.getOwnPropertySymbols返回一个数组，包含对象自身的所有Symbol属性。
+    5. Reflect.ownKeys(obj)
+        Reflect.ownKeys返回一个数组，包含对象自身的所有属性，不管是属性名是Symbol或字符串，也不管是否可枚举
+- \_\_proto\_\_属性，Object.setPrototypeOf()，Object.getPrototypeOf()
+
+\_\_proto\_\_属性（前后各两个下划线），用来读取或设置当前对象的prototype对象。目前，所有浏览器（包括 IE11）都部署了这个属性。
+
+Object.setPrototypeOf方法的作用与\_\_proto\_\_相同，用来设置一个对象的prototype对象，返回参数对象本身。它是 ES6 正式推荐的设置原型对象的方法。
+
+```
+let proto = {};
+let obj = { x: 10 };
+Object.setPrototypeOf(obj, proto);
+
+proto.y = 20;
+proto.z = 40;
+
+obj.x // 10
+obj.y // 20
+obj.z // 40
+```
+Object.getPrototypeOf()用于读取一个对象的原型对象
+- 对象的扩展运算符
+解构赋值：对象的解构赋值用于从一个对象取值，相当于将所有可遍历的、但尚未被读取的属性，分配到指定的对象上面。所有的键和它们的值，都会拷贝到新对象上面。
+
+```
+let { x, y, ...z } = { x: 1, y: 2, a: 3, b: 4 };
+x // 1
+y // 2
+z // { a: 3, b: 4 }
+```
+扩展运算符：扩展运算符（...）用于取出参数对象的所有可遍历属性，拷贝到当前对象之中
+
+```
+let z = { a: 3, b: 4 };
+let n = { ...z };
+n // { a: 3, b: 4 }
+
+let aClone = { ...a };
+// 等同于
+let aClone = Object.assign({}, a);
+
+let ab = { ...a, ...b };
+// 等同于
+let ab = Object.assign({}, a, b);
+```
 
 
 
