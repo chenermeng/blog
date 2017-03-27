@@ -1,6 +1,7 @@
 ### 前言 
 > javascript是世界上最好的语言
 
+本文是个人学习[ECMAScript 6 入门](http://es6.ruanyifeng.com/)的一个记录的笔记，记录其中的一些知识点，想详细了解es6的可以看原文。
 ##### ES6在目前的很多环境中都不支持，我们需要使用Babel(JS编译器)将ES6编译为ES5  [Babel 入门教程](http://www.ruanyifeng.com/blog/2016/01/babel.html)
 
 #### let和const命令
