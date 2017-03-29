@@ -713,5 +713,72 @@ let ab = Object.assign({}, a, b);
 ```
 详细的教程请看[对象的扩展](http://es6.ruanyifeng.com/#docs/object)
 #### Class
+JavaScript语言的传统方法是通过构造函数，定义并生成新对象
 
+```
+function Point(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+Point.prototype.toString = function () {
+  return '(' + this.x + ', ' + this.y + ')';
+};
+
+var p = new Point(1, 2);
+```
+es6引入了Class（类）这个概念，作为对象的模板。通过class关键字，可以定义类
+
+```
+//定义类
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+
+  toString() {
+    return '(' + this.x + ', ' + this.y + ')';
+  }
+}
+```
+constructor方法，这就是构造方法，而this关键字则代表实例对象。也就是说，ES5的构造函数Point，对应ES6的Point类的构造方法。
+
+使用的时候，也是直接对类使用new命令，跟构造函数的用法完全一致。
+```
+class Bar {
+  doStuff() {
+    console.log('stuff');
+  }
+}
+
+var b = new Bar();
+b.doStuff() // "stuff"
+```
+构造函数的prototype属性，在ES6的“类”上面继续存在。事实上，类的所有方法都定义在类的prototype属性上面。
+
+```
+class Point {
+  constructor(){
+    // ...
+  }
+
+  toString(){
+    // ...
+  }
+
+  toValue(){
+    // ...
+  }
+}
+
+// 等同于
+
+Point.prototype = {
+  toString(){},
+  toValue(){}
+};
+```
+- constructor方法
+constructor方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加。
 详细的教程请看[Class](http://es6.ruanyifeng.com/#docs/class)
