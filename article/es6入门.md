@@ -1,7 +1,7 @@
 ### 前言 
 > javascript是世界上最好的语言
 
-本文是个人学习[ECMAScript 6 入门](http://es6.ruanyifeng.com/)的一个记录的笔记，记录其中的一些知识点，想详细了解es6的可以看原文。
+本文是学习[ECMAScript 6 入门](http://es6.ruanyifeng.com/)的笔记，记录其中的一些知识点，想详细了解es6的可以看原文。
 ##### ES6在目前的很多环境中都不支持，我们需要使用Babel(JS编译器)将ES6编译为ES5  [Babel 入门教程](http://www.ruanyifeng.com/blog/2016/01/babel.html)
 
 #### let和const命令
@@ -781,4 +781,171 @@ Point.prototype = {
 ```
 - constructor方法
 constructor方法是类的默认方法，通过new命令生成对象实例时，自动调用该方法。一个类必须有constructor方法，如果没有显式定义，一个空的constructor方法会被默认添加。
+- Class的继承
+Class之间可以通过extends关键字实现继承
+
+```
+class ColorPoint extends Point {
+  constructor(x, y, color) {
+    super(x, y); // 调用父类的constructor(x, y)
+    this.color = color;
+  }
+
+  toString() {
+    return this.color + ' ' + super.toString(); // 调用父类的toString()
+  }
+}
+```
+constructor方法和toString方法之中，都出现了super关键字，它在这里表示父类的构造函数，用来新建父类的this对象。
+
+子类必须在constructor方法中调用super方法，否则新建实例时会报错。这是因为子类没有自己的this对象，而是继承父类的this对象，然后对其进行加工。如果不调用super方法，子类就得不到this对象。
+
+```
+class Point { /* ... */ }
+
+class ColorPoint extends Point {
+  constructor() {
+  }
+}
+
+let cp = new ColorPoint(); // ReferenceError
+```
+ES5的继承，实质是先创造子类的实例对象this，然后再将父类的方法添加到this上面（Parent.apply(this)）。ES6的继承机制完全不同，实质是先创造父类的实例对象this（所以必须先调用super方法），然后再用子类的构造函数修改this。
+
+```
+class Point {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+class ColorPoint extends Point {
+  constructor(x, y, color) {
+    this.color = color; // ReferenceError
+    super(x, y);
+    this.color = color; // 正确
+  }
+}
+```
+- 类的prototype属性和\_\_proto\_\_属性 
+大多数浏览器的ES5实现之中，每一个对象都有\_\_proto\_\_属性，指向对应的构造函数的prototype属性。Class作为构造函数的语法糖，同时有prototype属性和\_\_proto\_\_属性，因此同时存在两条继承链。
+（1）子类的\_\_proto\_\_属性，表示构造函数的继承，总是指向父类。
+（2）子类prototype属性的\_\_proto\_\_属性，表示方法的继承，总是指向父类的prototype属性。
+
+```
+class A {
+}
+
+class B extends A {
+}
+
+B.__proto__ === A // true
+B.prototype.__proto__ === A.prototype // true
+```
+- Extends 的继承目标
+第一种特殊情况，子类继承Object类
+
+```
+class A extends Object {
+}
+
+A.__proto__ === Object // true
+A.prototype.__proto__ === Object.prototype // true
+//这种情况下，A其实就是构造函数Object的复制，A的实例就是Object的实例。
+```
+第二种特殊情况，不存在任何继承。
+```
+class A {
+}
+
+A.__proto__ === Function.prototype // true
+A.prototype.__proto__ === Object.prototype // true
+//这种情况下，A作为一个基类（即不存在任何继承），就是一个普通函数，所以直接继承Funciton.prototype。
+//但是，A调用后返回一个空对象（即Object实例），所以A.prototype.__proto__指向构造函数（Object）的prototype属性。
+```
+第三种特殊情况，子类继承null。
+```
+class A extends null {
+}
+
+A.__proto__ === Function.prototype // true
+A.prototype.__proto__ === undefined // true
+//这种情况与第二种情况非常像。A也是一个普通函数，所以直接继承Funciton.prototype。
+//但是，A调用后返回的对象不继承任何方法，所以它的__proto__指向Function.prototype，即实质上执行了下面的代码
+class C extends null {
+  constructor() { return Object.create(null); }
+}
+```
+- super 关键字
+super这个关键字，既可以当作函数使用，也可以当作对象使用。在这两种情况下，它的用法完全不同。
+
+ super作为函数调用时，代表父类的构造函数。ES6 要求，子类的构造函数必须执行一次super函数
+
+```
+class A {}
+
+class B extends A {
+  constructor() {
+    super();
+  }
+}
+//上面代码中，子类B的构造函数之中的super()，代表调用父类的构造函数。这是必须的，否则 JavaScript 引擎会报错。
+```
+super作为对象时，在普通方法中，指向父类的原型对象；在静态方法中，指向父类。
+
+```
+class A {
+  p() {
+    return 2;
+  }
+}
+
+class B extends A {
+  constructor() {
+    super();
+    console.log(super.p()); // 2
+  }
+}
+
+let b = new B();
+```
+注意，使用super的时候，必须显式指定是作为函数、还是作为对象使用，否则会报错
+
+```
+class A {}
+
+class B extends A {
+  constructor() {
+    super();
+    console.log(super); // 报错
+  }
+}
+```
+- 实例的\_\_proto\_\_属性
+子类实例的\_\_proto\_\_属性的\_\_proto\_\_属性，指向父类实例的\_\_proto\_\_属性。也就是说，子类的原型的原型，是父类的原型。
+
+```
+var p1 = new Point(2, 3);
+var p2 = new ColorPoint(2, 3, 'red');
+
+p2.__proto__ === p1.__proto__ // false
+p2.__proto__.__proto__ === p1.__proto__ // true
+```
+- Class 的静态方法
+static定义的方法不会被实例继承，而是直接通过类来调用
+
+```
+class Foo {
+  static classMethod() {
+    return 'hello';
+  }
+}
+
+Foo.classMethod() // 'hello'
+
+var foo = new Foo();
+foo.classMethod()
+// TypeError: foo.classMethod is not a function
+```
 详细的教程请看[Class](http://es6.ruanyifeng.com/#docs/class)
