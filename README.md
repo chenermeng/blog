@@ -1,7 +1,7 @@
 ## javascript系列
 #### [js中的正则表达式入门](https://github.com/chenermeng/blog/issues/1)
 #### [js中的面向对象入门](https://github.com/chenermeng/blog/issues/2)
-## lodash源码解读系列
+## lodash
 #### Array
 #### Collection
 #### Function
