@@ -19,7 +19,7 @@ function chunk(array, size) {
   let resIndex = 0
   // 设置返回数组result的length
   const result = new Array(Math.ceil(length / size))
-  // 拆分数组
+  // 切割原数组
   // slice(array, start, end)
   // i++ 先赋值，后自增 ++i 先自增，后赋值
   while (index < length) {
